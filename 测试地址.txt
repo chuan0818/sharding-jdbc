@@ -1,0 +1,35 @@
+sharding-jdbc 目录结构
+sjdbc-read-write-springboot：Spring Boot版 Sharding JDBC 读写分离示列
+    http://localhost:8084/add
+    http://localhost:8084/users
+sjdbc-db-sharding-springboot：Spring Boot版 Sharding JDBC 垂直拆分（不同的表在不同的库中）[即多数据源]
+    http://localhost:8084/ld/add
+    http://localhost:8084/lds
+    http://localhost:8084/add
+    http://localhost:8084/users
+sjdbc-db-read-write-sharding-springboot：Spring Boot版 Sharding JDBC 垂直拆分（不同的表在不同的库中）+ 读写分离
+    http://localhost:8084/ld/add
+    http://localhost:8084/lds
+    http://localhost:8084/add
+    http://localhost:8084/users
+sjdbc-sharding-table-springboot：Spring Boot版 Sharding JDBC 不分库，只分表案例
+    http://localhost:8084/add
+    http://localhost:8084/users
+sjdbc-sharding-table-read-write-springboot：Spring Boot版 Sharding JDBC 不分库，只分表+读写分离案例
+    http://localhost:8084/add
+    http://localhost:8084/users
+sjdbc-db-sharding-table-springboot：Spring Boot版 Sharding JDBC 分库分表案例
+
+sjdbc-db-sharding-table-read-write-springboot：Spring Boot版 Sharding JDBC 分库分表+读写分离案例
+
+sjdbc-db-sharding-table-read-write-range-group-springboot：Spring Boot版 Sharding JDBC 分库分表+读写分离案例(范围分表+取模=无限扩容)
+
+
+actual-data-nodes 属性指定分片的真实数据节点，$是一个占位符，{0..1}表示实际拆分的数据库表数量。
+ds-$->{0..1}.t_order_$->{0..2}  表达式相当于 6个数据节点
+ds-0.t_order_0
+ds-0.t_order_1
+ds-0.t_order_2
+ds-1.t_order_0
+ds-1.t_order_1
+ds-1.t_order_2
