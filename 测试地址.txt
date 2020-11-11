@@ -25,6 +25,30 @@ sjdbc-db-sharding-table-read-write-springboot：Spring Boot版 Sharding JDBC 分
 sjdbc-db-sharding-table-read-write-range-group-springboot：Spring Boot版 Sharding JDBC 分库分表+读写分离案例(范围分表+取模=无限扩容)
 
 
+# 分表配置
+spring.shardingsphere.sharding.tables.user.actual-data-nodes=ds$->{0..1}.user_$->{0..2}
+spring.shardingsphere.sharding.tables.user.table-strategy.inline.sharding-column=id
+spring.shardingsphere.sharding.tables.user.table-strategy.inline.algorithm-expression=user_$->{id % 3}
+spring.shardingsphere.sharding.tables.user.key-generator.column=id
+spring.shardingsphere.sharding.tables.user.key-generator.type=SNOWFLAKE
+# 分库配置
+spring.shardingsphere.sharding.default-database-strategy.inline.sharding-column=id
+spring.shardingsphere.sharding.default-database-strategy.inline.algorithm-expression=ds$->{id % 2}
+
+actual-data-nodes配置的数据源名称(没有主备读写分离时，直接使用数据源名称; 有主备读写分离时，使用master-slave-rules中的<master-slave-data-source-name>)
+即<master-slave-data-source-name>优先级高于spring.shardingsphere.datasource.names
+spring.shardingsphere.datasource.names=master0,master0slave,master1,master1slave
+spring.shardingsphere.sharding.master-slave-rules.ds0.master-data-source-name=master0
+spring.shardingsphere.sharding.master-slave-rules.ds0.slave-data-source-names=master0slave
+#省略数据源配置，与数据分片一致
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.master-data-source-name= #主库数据源名称
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.slave-data-source-names[0]= #从库数据源名称列表
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.slave-data-source-names[1]= #从库数据源名称列表
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.slave-data-source-names[x]= #从库数据源名称列表
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.load-balance-algorithm-class-name= #从库负载均衡算法类名称。该类需实现MasterSlaveLoadBalanceAlgorithm接口且提供无参数构造器
+spring.shardingsphere.sharding.master-slave-rules.<master-slave-data-source-name>.load-balance-algorithm-type= #从库负载均衡算法类型，可选值：ROUND_ROBIN，RANDOM。若`load-balance-algorithm-class-name`存在则忽略该配置
+
+
 actual-data-nodes 属性指定分片的真实数据节点，$是一个占位符，{0..1}表示实际拆分的数据库表数量。
 ds-$->{0..1}.t_order_$->{0..2}  表达式相当于 6个数据节点
 ds-0.t_order_0
